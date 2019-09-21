@@ -888,6 +888,36 @@ class TestTags < JekyllUnitTest
       end
     end
 
+    context "include HTML inside of a list" do
+      setup do
+        content = <<CONTENT
+- list
+  {% include params.html %}
+CONTENT
+        create_post(content, {
+          "permalink"   => "pretty",
+          "source"      => source_dir,
+          "destination" => dest_dir,
+          "read_posts"  => true,
+        })
+      end
+
+      should "include file with empty parameters" do
+        expected = <<HTML
+<ul>
+  <li>list
+<span id="include-param"></span>
+<ul id="param-list">
+
+</ul>
+</li>
+</ul>
+
+HTML
+        assert_equal expected, @result
+      end
+    end
+
     context "without parameters" do
       setup do
         content = <<~CONTENT
